@@ -1,200 +1,427 @@
--- Services
+-- ═══════════════════════════════════════════════════
+-- 🦈 SHARK HUB ULTIMATE - EXTREME PERFORMANCE MODE
+-- ═══════════════════════════════════════════════════
+-- ⚠️ WARNING: จัดหนักจัดเต็ม ลบทุกอย่างที่ไม่จำเป็น
+-- ═══════════════════════════════════════════════════
+
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Lighting = game:GetService("Lighting")
 local Workspace = game:GetService("Workspace")
 local TweenService = game:GetService("TweenService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Stats = game:GetService("Stats")
+local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
--- ScreenGui
-local screenGui = Instance.new("ScreenGui", playerGui)
-screenGui.Name = "SharkHUB_Ultimate"
+-- ลบ GUI เก่า (ป้องกันรันซ้ำ)
+for _, gui in pairs(playerGui:GetChildren()) do
+    if gui.Name == "SharkHUB_Extreme" then
+        gui:Destroy()
+    end
+end
+task.wait(0.2)
+
+-- สร้าง ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "SharkHUB_Extreme"
 screenGui.ResetOnSpawn = false
 screenGui.IgnoreGuiInset = true
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+screenGui.Parent = playerGui
 
--- FPS + PING Counter (ตรงกลางบน - สีสดใส)
-local statsFrame = Instance.new("Frame", screenGui)
-statsFrame.Size = UDim2.new(0,140,0,50)
-statsFrame.Position = UDim2.new(0.5,-70,0,10)
-statsFrame.AnchorPoint = Vector2.new(0.5,0)
-statsFrame.BackgroundColor3 = Color3.fromRGB(15,15,20)
+-- ═══════════════════════════════════════════════════
+-- 📊 FPS/PING DISPLAY (สี Neon สดจัด)
+-- ═══════════════════════════════════════════════════
+local statsFrame = Instance.new("Frame")
+statsFrame.Size = UDim2.new(0, 180, 0, 70)
+statsFrame.Position = UDim2.new(0.5, -90, 0, 15)
+statsFrame.AnchorPoint = Vector2.new(0.5, 0)
+statsFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 statsFrame.BackgroundTransparency = 0.1
 statsFrame.BorderSizePixel = 0
 statsFrame.ZIndex = 100
+statsFrame.Parent = screenGui
 
-local statsCorner = Instance.new("UICorner", statsFrame)
-statsCorner.CornerRadius = UDim.new(0,12)
+local statsCorner = Instance.new("UICorner")
+statsCorner.CornerRadius = UDim.new(0, 15)
+statsCorner.Parent = statsFrame
 
-local statsStroke = Instance.new("UIStroke", statsFrame)
-statsStroke.Color = Color3.fromRGB(0,255,255)
-statsStroke.Thickness = 3
+local statsStroke = Instance.new("UIStroke")
+statsStroke.Color = Color3.fromRGB(0, 255, 255)
+statsStroke.Thickness = 4
+statsStroke.Transparency = 0
+statsStroke.Parent = statsFrame
 
-local statsGradient = Instance.new("UIGradient", statsFrame)
-statsGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(30,30,40)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(15,15,25))
-}
-statsGradient.Rotation = 90
+local statsGlow = Instance.new("ImageLabel")
+statsGlow.Size = UDim2.new(1, 20, 1, 20)
+statsGlow.Position = UDim2.new(0.5, 0, 0.5, 0)
+statsGlow.AnchorPoint = Vector2.new(0.5, 0.5)
+statsGlow.BackgroundTransparency = 1
+statsGlow.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
+statsGlow.ImageColor3 = Color3.fromRGB(0, 255, 255)
+statsGlow.ImageTransparency = 0.8
+statsGlow.ZIndex = 99
+statsGlow.Parent = statsFrame
 
--- FPS Label
-local fpsLabel = Instance.new("TextLabel", statsFrame)
-fpsLabel.Size = UDim2.new(1,0,0.5,0)
-fpsLabel.Position = UDim2.new(0,0,0,0)
+local fpsLabel = Instance.new("TextLabel")
+fpsLabel.Size = UDim2.new(1, 0, 0.5, 0)
+fpsLabel.Position = UDim2.new(0, 0, 0, 0)
 fpsLabel.BackgroundTransparency = 1
-fpsLabel.TextColor3 = Color3.fromRGB(0,255,150)
-fpsLabel.Text = "FPS: --"
+fpsLabel.TextColor3 = Color3.fromRGB(0, 255, 50)
+fpsLabel.Text = "⚡ FPS: --"
 fpsLabel.Font = Enum.Font.GothamBold
-fpsLabel.TextSize = 16
+fpsLabel.TextSize = 20
+fpsLabel.TextStrokeTransparency = 0.2
 fpsLabel.ZIndex = 101
+fpsLabel.Parent = statsFrame
 
--- PING Label
-local pingLabel = Instance.new("TextLabel", statsFrame)
-pingLabel.Size = UDim2.new(1,0,0.5,0)
-pingLabel.Position = UDim2.new(0,0,0.5,0)
+local pingLabel = Instance.new("TextLabel")
+pingLabel.Size = UDim2.new(1, 0, 0.5, 0)
+pingLabel.Position = UDim2.new(0, 0, 0.5, 0)
 pingLabel.BackgroundTransparency = 1
-pingLabel.TextColor3 = Color3.fromRGB(255,100,255)
-pingLabel.Text = "PING: --"
+pingLabel.TextColor3 = Color3.fromRGB(255, 0, 255)
+pingLabel.Text = "📡 PING: --"
 pingLabel.Font = Enum.Font.GothamBold
-pingLabel.TextSize = 16
+pingLabel.TextSize = 20
+pingLabel.TextStrokeTransparency = 0.2
 pingLabel.ZIndex = 101
+pingLabel.Parent = statsFrame
 
--- Notification (สีสดใส)
-local notifFrame = Instance.new("Frame", screenGui)
-notifFrame.Size = UDim2.new(0,340,0,120)
-notifFrame.Position = UDim2.new(1,360,0,10)
-notifFrame.BackgroundColor3 = Color3.fromRGB(10,10,15)
+-- ═══════════════════════════════════════════════════
+-- 🔔 NOTIFICATION SYSTEM (สี Neon เข้มข้น)
+-- ═══════════════════════════════════════════════════
+local notifFrame = Instance.new("Frame")
+notifFrame.Size = UDim2.new(0, 380, 0, 140)
+notifFrame.Position = UDim2.new(1, 400, 0, 15)
+notifFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+notifFrame.BackgroundTransparency = 0.05
 notifFrame.BorderSizePixel = 0
 notifFrame.ZIndex = 200
+notifFrame.Parent = screenGui
 
-local notifCorner = Instance.new("UICorner", notifFrame)
-notifCorner.CornerRadius = UDim.new(0,15)
+local notifCorner = Instance.new("UICorner")
+notifCorner.CornerRadius = UDim.new(0, 18)
+notifCorner.Parent = notifFrame
 
-local notifStroke = Instance.new("UIStroke", notifFrame)
-notifStroke.Color = Color3.fromRGB(0,255,255)
-notifStroke.Thickness = 4
+local notifStroke = Instance.new("UIStroke")
+notifStroke.Color = Color3.fromRGB(255, 0, 255)
+notifStroke.Thickness = 5
+notifStroke.Transparency = 0
+notifStroke.Parent = notifFrame
 
-local notifGradient = Instance.new("UIGradient", notifFrame)
+local notifGradient = Instance.new("UIGradient")
 notifGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(255,0,150)),
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0,255,255)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(150,0,255))
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 150)),
+    ColorSequenceKeypoint.new(0.25, Color3.fromRGB(0, 255, 255)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 0)),
+    ColorSequenceKeypoint.new(0.75, Color3.fromRGB(0, 255, 100)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 200))
 }
-notifGradient.Rotation = 45
+notifGradient.Rotation = 0
+notifGradient.Parent = notifFrame
 
--- Animated gradient
+-- Animated Gradient
+local gradientActive = true
 task.spawn(function()
-    while notifFrame and notifFrame.Parent do
-        for i = 0, 360, 5 do
-            if notifGradient then
-                notifGradient.Rotation = i
-            end
-            task.wait(0.05)
+    while gradientActive and notifFrame.Parent do
+        for angle = 0, 360, 10 do
+            if not (notifGradient and notifGradient.Parent) then break end
+            notifGradient.Rotation = angle
+            task.wait(0.04)
         end
     end
 end)
 
-local notifIcon = Instance.new("TextLabel", notifFrame)
-notifIcon.Size = UDim2.new(0,70,0,70)
-notifIcon.Position = UDim2.new(0,10,0,25)
+local notifIcon = Instance.new("TextLabel")
+notifIcon.Size = UDim2.new(0, 80, 0, 80)
+notifIcon.Position = UDim2.new(0, 15, 0, 30)
 notifIcon.BackgroundTransparency = 1
 notifIcon.Text = "🦈"
-notifIcon.TextSize = 50
+notifIcon.TextSize = 60
 notifIcon.ZIndex = 201
+notifIcon.Parent = notifFrame
 
-local notifTitle = Instance.new("TextLabel", notifFrame)
-notifTitle.Size = UDim2.new(1,-90,0,32)
-notifTitle.Position = UDim2.new(0,85,0,8)
+local notifTitle = Instance.new("TextLabel")
+notifTitle.Size = UDim2.new(1, -110, 0, 35)
+notifTitle.Position = UDim2.new(0, 100, 0, 10)
 notifTitle.BackgroundTransparency = 1
-notifTitle.TextColor3 = Color3.fromRGB(255,255,255)
-notifTitle.Text = "🦈 SHARK HUB ULTIMATE"
+notifTitle.TextColor3 = Color3.fromRGB(0, 255, 255)
+notifTitle.Text = "🦈 SHARK HUB EXTREME"
 notifTitle.Font = Enum.Font.GothamBold
-notifTitle.TextSize = 19
+notifTitle.TextSize = 22
 notifTitle.TextXAlignment = Enum.TextXAlignment.Left
+notifTitle.TextStrokeTransparency = 0.3
 notifTitle.ZIndex = 201
+notifTitle.Parent = notifFrame
 
-local notifStatus = Instance.new("TextLabel", notifFrame)
-notifStatus.Size = UDim2.new(1,-90,0,26)
-notifStatus.Position = UDim2.new(0,85,0,42)
+local notifStatus = Instance.new("TextLabel")
+notifStatus.Size = UDim2.new(1, -110, 0, 30)
+notifStatus.Position = UDim2.new(0, 100, 0, 48)
 notifStatus.BackgroundTransparency = 1
-notifStatus.TextColor3 = Color3.fromRGB(0,255,150)
-notifStatus.Text = "✓ MEGA LUCK + ULTRA FPS"
+notifStatus.TextColor3 = Color3.fromRGB(0, 255, 50)
+notifStatus.Text = "✓ EXTREME MODE ACTIVATED"
 notifStatus.Font = Enum.Font.Gotham
-notifStatus.TextSize = 14
+notifStatus.TextSize = 16
 notifStatus.TextXAlignment = Enum.TextXAlignment.Left
+notifStatus.TextStrokeTransparency = 0.3
 notifStatus.ZIndex = 201
+notifStatus.Parent = notifFrame
 
-local notifPing = Instance.new("TextLabel", notifFrame)
-notifPing.Size = UDim2.new(1,-90,0,24)
-notifPing.Position = UDim2.new(0,85,0,70)
-notifPing.BackgroundTransparency = 1
-notifPing.TextColor3 = Color3.fromRGB(255,150,255)
-notifPing.Text = "⚡ LOW PING OPTIMIZER ON"
-notifPing.Font = Enum.Font.Gotham
-notifPing.TextSize = 13
-notifPing.TextXAlignment = Enum.TextXAlignment.Left
-notifPing.ZIndex = 201
+local notifInfo = Instance.new("TextLabel")
+notifInfo.Size = UDim2.new(1, -110, 0, 28)
+notifInfo.Position = UDim2.new(0, 100, 0, 80)
+notifInfo.BackgroundTransparency = 1
+notifInfo.TextColor3 = Color3.fromRGB(255, 255, 0)
+notifInfo.Text = "⚡ DESTROYING ALL EFFECTS..."
+notifInfo.Font = Enum.Font.Gotham
+notifInfo.TextSize = 15
+notifInfo.TextXAlignment = Enum.TextXAlignment.Left
+notifInfo.TextStrokeTransparency = 0.3
+notifInfo.ZIndex = 201
+notifInfo.Parent = notifFrame
 
-local notifUser = Instance.new("TextLabel", notifFrame)
-notifUser.Size = UDim2.new(1,-90,0,22)
-notifUser.Position = UDim2.new(0,85,0,95)
+local notifUser = Instance.new("TextLabel")
+notifUser.Size = UDim2.new(1, -110, 0, 26)
+notifUser.Position = UDim2.new(0, 100, 0, 110)
 notifUser.BackgroundTransparency = 1
-notifUser.TextColor3 = Color3.fromRGB(200,220,255)
-notifUser.Text = "👤 @"..player.Name.." | Display: "..player.DisplayName
+notifUser.TextColor3 = Color3.fromRGB(200, 200, 255)
+notifUser.Text = "👤 " .. player.Name .. " | " .. player.DisplayName
 notifUser.Font = Enum.Font.Gotham
-notifUser.TextSize = 12
+notifUser.TextSize = 14
 notifUser.TextXAlignment = Enum.TextXAlignment.Left
+notifUser.TextStrokeTransparency = 0.3
 notifUser.ZIndex = 201
+notifUser.Parent = notifFrame
 
 local function showNotification()
-    local tweenIn = TweenService:Create(notifFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-        Position = UDim2.new(1,-350,0,10)
+    local tweenIn = TweenService:Create(notifFrame, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Position = UDim2.new(1, -395, 0, 15)
     })
     tweenIn:Play()
-    task.wait(4.5)
-    local tweenOut = TweenService:Create(notifFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
-        Position = UDim2.new(1,360,0,10)
+    
+    task.wait(6)
+    
+    local tweenOut = TweenService:Create(notifFrame, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
+        Position = UDim2.new(1, 400, 0, 15)
     })
     tweenOut:Play()
     tweenOut.Completed:Connect(function()
-        notifFrame:Destroy()
+        gradientActive = false
+        if notifFrame then notifFrame:Destroy() end
     end)
 end
 
 -- ═══════════════════════════════════════════════════
--- ⚡ LOW PING OPTIMIZER
+-- 🔥 EXTREME PERFORMANCE MODE (ลบทุกอย่าง)
 -- ═══════════════════════════════════════════════════
-local function enableLowPingMode()
-    print("⚡ ACTIVATING LOW PING OPTIMIZER...")
+local destroyedCount = 0
+
+local function extremePerformanceMode()
+    print("🔥 === SHARK HUB EXTREME MODE === 🔥")
+    print("⚠️ DESTROYING EVERYTHING...")
     
-    -- 1. ลด Network Replication
-    settings().Network.IncomingReplicationLag = 0
+    -- ══════════════════════════════════════
+    -- RENDERING SETTINGS (ต่ำสุด)
+    -- ══════════════════════════════════════
+    pcall(function()
+        local renderSettings = settings().Rendering
+        renderSettings.QualityLevel = Enum.QualityLevel.Level01
+        renderSettings.MeshPartDetailLevel = Enum.MeshPartDetailLevel.Level01
+        renderSettings.EditQualityLevel = Enum.QualityLevel.Level01
+        
+        local userGameSettings = UserSettings():GetService("UserGameSettings")
+        userGameSettings.SavedQualityLevel = Enum.SavedQualitySetting.QualityLevel1
+        userGameSettings.MasterVolume = 0
+    end)
     
-    -- 2. ปิด Unnecessary Network Objects
+    -- ══════════════════════════════════════
+    -- LIGHTING (ปิดทุกอย่าง)
+    -- ══════════════════════════════════════
+    pcall(function()
+        Lighting.GlobalShadows = false
+        Lighting.FogEnd = 9e9
+        Lighting.FogStart = 9e9
+        Lighting.Brightness = 0
+        Lighting.OutdoorAmbient = Color3.new(1, 1, 1)
+        Lighting.Ambient = Color3.new(1, 1, 1)
+        Lighting.EnvironmentDiffuseScale = 0
+        Lighting.EnvironmentSpecularScale = 0
+        Lighting.ShadowSoftness = 0
+        Lighting.Technology = Enum.Technology.Compatibility
+        Lighting.ClockTime = 12
+        Lighting.GeographicLatitude = 0
+        Lighting.ExposureCompensation = 0
+        
+        for _, obj in pairs(Lighting:GetChildren()) do
+            if not obj:IsA("Atmosphere") then
+                pcall(function() obj:Destroy() end)
+                destroyedCount = destroyedCount + 1
+            end
+        end
+        
+        if Lighting:FindFirstChildOfClass("Atmosphere") then
+            Lighting:FindFirstChildOfClass("Atmosphere"):Destroy()
+        end
+    end)
+    
+    -- ══════════════════════════════════════
+    -- TERRAIN (ลดทุกอย่าง)
+    -- ══════════════════════════════════════
+    pcall(function()
+        local terrain = Workspace:FindFirstChildOfClass("Terrain")
+        if terrain then
+            terrain.Decoration = false
+            terrain.WaterReflectance = 0
+            terrain.WaterTransparency = 0
+            terrain.WaterWaveSize = 0
+            terrain.WaterWaveSpeed = 0
+        end
+    end)
+    
+    -- ══════════════════════════════════════
+    -- WORKSPACE DESTRUCTION (จัดหนักสุด)
+    -- ══════════════════════════════════════
+    local processedCount = 0
+    local preservedNames = {"head", "torso", "arm", "leg", "humanoid", "rootpart", "nametag", "healthbar", "overhead", "billboard"}
+    
     for _, obj in pairs(Workspace:GetDescendants()) do
+        processedCount = processedCount + 1
+        if processedCount % 50 == 0 then task.wait() end
+        
         pcall(function()
-            if obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction") then
-                -- ไม่ลบ แต่ optimize
+            local objName = obj.Name:lower()
+            local isPreserved = false
+            
+            for _, preserved in ipairs(preservedNames) do
+                if objName:find(preserved) then
+                    isPreserved = true
+                    break
+                end
+            end
+            
+            if isPreserved then return end
+            
+            -- ═══ ลบ EFFECTS ทั้งหมด ═══
+            if obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Beam") or
+               obj:IsA("Fire") or obj:IsA("Smoke") or obj:IsA("Sparkles") or
+               obj:IsA("Explosion") then
+                obj:Destroy()
+                destroyedCount = destroyedCount + 1
+                
+            -- ═══ ลบ LIGHTS ทั้งหมด ═══
+            elseif obj:IsA("PointLight") or obj:IsA("SpotLight") or obj:IsA("SurfaceLight") then
+                obj:Destroy()
+                destroyedCount = destroyedCount + 1
+                
+            -- ═══ ลบ POST EFFECTS ═══
+            elseif obj:IsA("BloomEffect") or obj:IsA("BlurEffect") or
+                   obj:IsA("ColorCorrectionEffect") or obj:IsA("DepthOfFieldEffect") or
+                   obj:IsA("SunRaysEffect") then
+                obj:Destroy()
+                destroyedCount = destroyedCount + 1
+                
+            -- ═══ ลบ DECALS/TEXTURES (เว้นหน้า) ═══
+            elseif obj:IsA("Decal") then
+                if objName ~= "face" then
+                    obj:Destroy()
+                    destroyedCount = destroyedCount + 1
+                end
+            elseif obj:IsA("Texture") or obj:IsA("SurfaceAppearance") then
+                obj:Destroy()
+                destroyedCount = destroyedCount + 1
+                
+            -- ═══ OPTIMIZE PARTS ═══
+            elseif obj:IsA("BasePart") then
+                obj.Material = Enum.Material.Plastic
+                obj.CastShadow = false
+                obj.Reflectance = 0
+                
+                if obj:IsA("MeshPart") then
+                    obj.RenderFidelity = Enum.RenderFidelity.Performance
+                    obj.CollisionFidelity = Enum.CollisionFidelity.Box
+                    if objName ~= "head" then
+                        obj.TextureID = ""
+                    end
+                    obj.DoubleSided = false
+                end
+                
+                if obj:IsA("Part") or obj:IsA("WedgePart") or obj:IsA("CornerWedgePart") then
+                    obj.TopSurface = Enum.SurfaceType.Smooth
+                    obj.BottomSurface = Enum.SurfaceType.Smooth
+                end
+                
+            -- ═══ ลบ/ปิด SOUNDS ═══
             elseif obj:IsA("Sound") then
-                obj.PlayOnRemove = false
+                obj.Volume = 0
                 obj:Stop()
+                destroyedCount = destroyedCount + 1
+                
+            -- ═══ OPTIMIZE MESHES ═══
+            elseif obj:IsA("SpecialMesh") then
+                if objName ~= "head" then
+                    obj.TextureId = ""
+                end
+                
+            -- ═══ ลบ SURFACE GUIs (เว้นชื่อ) ═══
+            elseif obj:IsA("SurfaceGui") then
+                if not (objName:find("name") or objName:find("health")) then
+                    obj:Destroy()
+                    destroyedCount = destroyedCount + 1
+                end
+                
+            -- ═══ BILLBOARDS (เว้นชื่อผู้เล่น) ═══
+            elseif obj:IsA("BillboardGui") then
+                if not (objName:find("name") or objName:find("tag") or 
+                        objName:find("health") or objName:find("overhead")) then
+                    obj:Destroy()
+                    destroyedCount = destroyedCount + 1
+                end
             end
         end)
     end
     
-    -- 3. ลด Player Replication
+    -- ══════════════════════════════════════
+    -- CAMERA EFFECTS (ลบทุกอัน)
+    -- ══════════════════════════════════════
     pcall(function()
-        for _, plr in pairs(Players:GetPlayers()) do
-            if plr ~= player and plr.Character then
-                for _, part in pairs(plr.Character:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        part.Transparency = 0.5
-                    elseif part:IsA("Decal") or part:IsA("Texture") then
+        local camera = Workspace.CurrentCamera
+        if camera then
+            for _, effect in pairs(camera:GetDescendants()) do
+                if effect:IsA("BloomEffect") or effect:IsA("BlurEffect") or
+                   effect:IsA("ColorCorrectionEffect") or effect:IsA("DepthOfFieldEffect") or
+                   effect:IsA("SunRaysEffect") then
+                    effect:Destroy()
+                    destroyedCount = destroyedCount + 1
+                end
+            end
+        end
+    end)
+    
+    -- ══════════════════════════════════════
+    -- NETWORK OPTIMIZATION (ลด PING)
+    -- ══════════════════════════════════════
+    pcall(function()
+        settings().Network.IncomingReplicationLag = 0
+        settings().Network.PhysicsSend = 1
+        settings().Network.PhysicsReceive = 1
+        settings().Network.ExperimentalPhysicsEnabled = false
+    end)
+    
+    -- ══════════════════════════════════════
+    -- OTHER PLAYERS (ทำให้โปร่งแสง)
+    -- ══════════════════════════════════════
+    pcall(function()
+        for _, otherPlayer in pairs(Players:GetPlayers()) do
+            if otherPlayer ~= player and otherPlayer.Character then
+                for _, part in pairs(otherPlayer.Character:GetDescendants()) do
+                    if part:IsA("BasePart") and part.Name ~= "Head" and part.Name ~= "HumanoidRootPart" then
+                        part.Transparency = 0.8
+                        part.CanCollide = false
+                    elseif part:IsA("Decal") and part.Name ~= "face" then
                         part:Destroy()
                     end
                 end
@@ -202,30 +429,45 @@ local function enableLowPingMode()
         end
     end)
     
-    -- 4. ปิด Unnecessary Services
-    pcall(function()
-        game:GetService("CoreGui").Name = "CoreGui"
-    end)
-    
-    print("✓ LOW PING MODE ENABLED")
+    print("✅ EXTREME MODE COMPLETE!")
+    print("🗑️ DESTROYED: " .. destroyedCount .. " objects")
+    print("⚡ FPS BOOST ACTIVATED!")
+    notifInfo.Text = "✓ DESTROYED " .. destroyedCount .. " OBJECTS"
 end
 
--- ═══════════════════════════════════════════════════
--- 🎰 MEGA LUCK SYSTEM
--- ═══════════════════════════════════════════════════
-local function enableMEGALuck()
-    print("🎰 ACTIVATING MEGA LUCK SYSTEM...")
+-- ══════════════════════════════════════
+-- CONTINUOUS DESTROYER (ลบแอฟเฟคตลอดเวลา)
+-- ══════════════════════════════════════
+task.spawn(function()
+    task.wait(3)
+    while true do
+        task.wait(1)
+        pcall(function()
+            for _, obj in pairs(Workspace:GetDescendants()) do
+                if obj:IsA("ParticleEmitter") or obj:IsA("Trail") or
+                   obj:IsA("Beam") or obj:IsA("Fire") or obj:IsA("Smoke") or
+                   obj:IsA("Sparkles") or obj:IsA("PointLight") or
+                   obj:IsA("SpotLight") or obj:IsA("SurfaceLight") then
+                    obj:Destroy()
+                end
+            end
+        end)
+    end
+end)
+
+-- ══════════════════════════════════════
+-- MEGA LUCK SYSTEM (RNG Override)
+-- ══════════════════════════════════════
+local function enableMegaLuck()
+    print("🎰 MEGA LUCK ACTIVATED")
     
-    -- Override math.random
     local oldRandom = math.random
     math.random = function(min, max)
         if not min then return 1 end
         if not max then return min end
         return max
     end
-    math.randomseed = function() end
     
-    -- Hook Random.new
     local oldRandomNew = Random.new
     Random.new = function(...)
         local rng = oldRandomNew(...)
@@ -238,50 +480,21 @@ local function enableMEGALuck()
         return rng
     end
     
-    -- Hook RemoteEvents
-    local function hookRemote(remote)
-        if remote:IsA("RemoteEvent") then
-            local oldFire = remote.FireServer
-            remote.FireServer = function(self, ...)
-                local args = {...}
-                for i, v in ipairs(args) do
-                    if type(v) == "number" and v > 0 and v < 1 then
-                        args[i] = 1
-                    elseif type(v) == "number" and v > 1 then
-                        args[i] = v * 10
-                    end
-                end
-                return oldFire(self, unpack(args))
-            end
-        end
-    end
-    
-    for _, remote in pairs(game:GetDescendants()) do
-        pcall(function() hookRemote(remote) end)
-    end
-    game.DescendantAdded:Connect(function(obj)
-        pcall(function() hookRemote(obj) end)
-    end)
-    
-    -- Auto-pickup items
     task.spawn(function()
-        while task.wait(0.1) do
+        while character and character.Parent do
+            task.wait(0.2)
             pcall(function()
+                if not (humanoidRootPart and humanoidRootPart.Parent) then return end
+                
                 for _, obj in pairs(Workspace:GetDescendants()) do
-                    if obj:IsA("BasePart") and (
-                        obj.Name:lower():find("coin") or
-                        obj.Name:lower():find("gem") or
-                        obj.Name:lower():find("collectible") or
-                        obj.Name:lower():find("pickup") or
-                        obj.Name:lower():find("item") or
-                        obj.Name:lower():find("drop") or
-                        obj.Name:lower():find("cash") or
-                        obj.Name:lower():find("money")
-                    ) then
-                        if character and character:FindFirstChild("HumanoidRootPart") then
-                            local distance = (obj.Position - character.HumanoidRootPart.Position).Magnitude
-                            if distance < 150 then
-                                obj.CFrame = character.HumanoidRootPart.CFrame
+                    if obj:IsA("BasePart") then
+                        local name = obj.Name:lower()
+                        if name:find("coin") or name:find("gem") or name:find("cash") or
+                           name:find("money") or name:find("orb") or name:find("collectible") or
+                           name:find("pickup") or name:find("item") or name:find("drop") then
+                            local distance = (obj.Position - humanoidRootPart.Position).Magnitude
+                            if distance < 250 then
+                                obj.CFrame = humanoidRootPart.CFrame
                             end
                         end
                     end
@@ -289,278 +502,40 @@ local function enableMEGALuck()
             end)
         end
     end)
-    
-    print("✓ MEGA LUCK ENABLED")
 end
 
--- ═══════════════════════════════════════════════════
--- 🔥 ULTIMATE PERFORMANCE (ลบทุกอย่าง)
--- ═══════════════════════════════════════════════════
-local function enableULTIMATEMode()
-    print("🔥 ACTIVATING ULTIMATE PERFORMANCE...")
-    
-    local removedCount = 0
-    
-    -- ═══ RENDERING SETTINGS ═══
-    settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
-    settings().Rendering.MeshPartDetailLevel = Enum.MeshPartDetailLevel.Level01
-    settings().Rendering.EditQualityLevel = Enum.QualityLevel.Level01
-    
-    -- ═══ LIGHTING DESTRUCTION ═══
-    Lighting.GlobalShadows = false
-    Lighting.FogEnd = 9e9
-    Lighting.FogStart = 9e9
-    Lighting.Brightness = 0
-    Lighting.OutdoorAmbient = Color3.fromRGB(128,128,128)
-    Lighting.Ambient = Color3.fromRGB(128,128,128)
-    Lighting.EnvironmentDiffuseScale = 0
-    Lighting.EnvironmentSpecularScale = 0
-    Lighting.ShadowSoftness = 0
-    Lighting.Technology = Enum.Technology.Compatibility
-    Lighting.ClockTime = 12
-    Lighting.GeographicLatitude = 0
-    Lighting.ExposureCompensation = 0
-    
-    for _, obj in pairs(Lighting:GetChildren()) do
-        pcall(function()
-            obj:Destroy()
-            removedCount = removedCount + 1
-        end)
-    end
-    
-    -- ═══ TERRAIN ═══
-    if Workspace:FindFirstChild("Terrain") then
-        local terrain = Workspace.Terrain
-        terrain.Decoration = false
-        terrain.WaterReflectance = 0
-        terrain.WaterTransparency = 0
-        terrain.WaterWaveSize = 0
-        terrain.WaterWaveSpeed = 0
-    end
-    
-    -- ═══ WORKSPACE EXTREME CLEANUP ═══
-    local count = 0
-    for _, obj in pairs(Workspace:GetDescendants()) do
-        count = count + 1
-        if count % 15 == 0 then task.wait() end
-        
-        pcall(function()
-            local objName = obj.Name:lower()
-            
-            -- ไม่ลบชื่อผู้เล่น/หน้าตา
-            if objName:find("head") or objName:find("torso") or objName:find("arm") or 
-               objName:find("leg") or objName:find("humanoid") then
-                return
-            end
-            
-            -- ═══ PARTS ═══
-            if obj:IsA("BasePart") then
-                obj.Material = Enum.Material.Plastic
-                obj.CastShadow = false
-                obj.Reflectance = 0
-                
-                if obj:IsA("MeshPart") then
-                    obj.RenderFidelity = Enum.RenderFidelity.Performance
-                    obj.CollisionFidelity = Enum.CollisionFidelity.Box
-                    if not objName:find("head") and not objName:find("face") then
-                        obj.TextureID = ""
-                    end
-                    obj.DoubleSided = false
-                    removedCount = removedCount + 1
-                end
-                
-                if obj:IsA("Part") or obj:IsA("WedgePart") then
-                    obj.TopSurface = Enum.SurfaceType.Smooth
-                    obj.BottomSurface = Enum.SurfaceType.Smooth
-                    obj.LeftSurface = Enum.SurfaceType.Smooth
-                    obj.RightSurface = Enum.SurfaceType.Smooth
-                    obj.FrontSurface = Enum.SurfaceType.Smooth
-                    obj.BackSurface = Enum.SurfaceType.Smooth
-                end
-                
-            -- ═══ EFFECTS (DESTROY ALL) ═══
-            elseif obj:IsA("ParticleEmitter") then
-                obj:Destroy()
-                removedCount = removedCount + 1
-            elseif obj:IsA("Trail") then
-                obj:Destroy()
-                removedCount = removedCount + 1
-            elseif obj:IsA("Beam") then
-                obj:Destroy()
-                removedCount = removedCount + 1
-            elseif obj:IsA("Fire") then
-                obj:Destroy()
-                removedCount = removedCount + 1
-            elseif obj:IsA("Smoke") then
-                obj:Destroy()
-                removedCount = removedCount + 1
-            elseif obj:IsA("Sparkles") then
-                obj:Destroy()
-                removedCount = removedCount + 1
-                
-            -- ═══ DECALS (เว้นหน้าตัวละคร) ═══
-            elseif obj:IsA("Decal") then
-                if not objName:find("face") then
-                    obj:Destroy()
-                    removedCount = removedCount + 1
-                end
-            elseif obj:IsA("Texture") then
-                obj:Destroy()
-                removedCount = removedCount + 1
-            elseif obj:IsA("SurfaceAppearance") then
-                obj:Destroy()
-                removedCount = removedCount + 1
-                
-            -- ═══ LIGHTS ═══
-            elseif obj:IsA("PointLight") then
-                obj:Destroy()
-                removedCount = removedCount + 1
-            elseif obj:IsA("SpotLight") then
-                obj:Destroy()
-                removedCount = removedCount + 1
-            elseif obj:IsA("SurfaceLight") then
-                obj:Destroy()
-                removedCount = removedCount + 1
-                
-            -- ═══ MESHES ═══
-            elseif obj:IsA("SpecialMesh") then
-                if not objName:find("head") then
-                    obj.TextureId = ""
-                    removedCount = removedCount + 1
-                end
-            elseif obj:IsA("FileMesh") then
-                if not objName:find("head") then
-                    obj.TextureId = ""
-                end
-                
-            -- ═══ GUIS ═══
-            elseif obj:IsA("SurfaceGui") then
-                obj:Destroy()
-                removedCount = removedCount + 1
-            elseif obj:IsA("BillboardGui") then
-                -- เก็บชื่อผู้เล่น
-                if not objName:find("name") and not objName:find("tag") then
-                    obj:Destroy()
-                    removedCount = removedCount + 1
-                end
-                
-            -- ═══ SOUNDS ═══
-            elseif obj:IsA("Sound") then
-                obj.Volume = 0
-                obj:Stop()
-                removedCount = removedCount + 1
-                
-            -- ═══ POST EFFECTS ═══
-            elseif obj:IsA("BloomEffect") or obj:IsA("BlurEffect") or 
-                   obj:IsA("ColorCorrectionEffect") or obj:IsA("DepthOfFieldEffect") or
-                   obj:IsA("SunRaysEffect") then
-                obj:Destroy()
-                removedCount = removedCount + 1
-                
-            -- ═══ ATTACHMENTS & ACCESSORIES ═══
-            elseif obj:IsA("Attachment") then
-                for _, child in pairs(obj:GetChildren()) do
-                    if child:IsA("ParticleEmitter") or child:IsA("Trail") or child:IsA("Beam") then
-                        child:Destroy()
-                        removedCount = removedCount + 1
-                    end
-                end
-            end
-        end)
-    end
-    
-    -- ═══ CAMERA EFFECTS ═══
-    if Workspace.CurrentCamera then
-        for _, effect in pairs(Workspace.CurrentCamera:GetDescendants()) do
-            pcall(function()
-                effect:Destroy()
-                removedCount = removedCount + 1
-            end)
-        end
-    end
-    
-    -- ═══ GUI OPTIMIZATION ═══
-    for _, gui in pairs(playerGui:GetDescendants()) do
-        pcall(function()
-            if gui:IsA("ImageLabel") or gui:IsA("ImageButton") then
-                gui.ImageTransparency = 1
-                gui.Image = ""
-            elseif gui:IsA("ViewportFrame") then
-                gui:Destroy()
-                removedCount = removedCount + 1
-            end
-        end)
-    end
-    
-    -- ═══ CONTINUOUS CLEANUP ═══
-    task.spawn(function()
-        while task.wait(2) do
-            pcall(function()
-                for _, obj in pairs(Workspace:GetDescendants()) do
-                    if obj:IsA("ParticleEmitter") or obj:IsA("Trail") or 
-                       obj:IsA("Beam") or obj:IsA("Fire") or obj:IsA("Smoke") then
-                        obj:Destroy()
-                    end
-                end
-            end)
-        end
-    end)
-    
-    print("✓ ULTIMATE MODE ACTIVATED")
-    print("🗑️ DESTROYED: "..removedCount.." objects")
-end
-
--- ═══════════════════════════════════════════════════
--- 📊 FPS + PING MONITOR
--- ═══════════════════════════════════════════════════
-local lastTime = tick()
-local frameCount = 0
-local fpsHistory = {}
-local ultimateModeActivated = false
+-- ══════════════════════════════════════
+-- FPS/PING MONITOR
+-- ══════════════════════════════════════
+local lastUpdateTime = tick()
+local frameCounter = 0
+local optimizerStarted = false
 
 RunService.RenderStepped:Connect(function()
-    frameCount = frameCount + 1
+    frameCounter = frameCounter + 1
     
-    if tick() - lastTime >= 1 then
-        local fps = frameCount
-        local ping = Stats.Network.ServerStatsItem["Data Ping"]:GetValue()
+    local currentTime = tick()
+    if currentTime - lastUpdateTime >= 1 then
+        local fps = frameCounter
+        local ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
         
-        -- FPS Display
-        fpsLabel.Text = "FPS: "..fps
-        if fps >= 144 then
-            fpsLabel.TextColor3 = Color3.fromRGB(0,255,150)
+        fpsLabel.Text = "⚡ FPS: " .. fps
+        if fps >= 120 then
+            fpsLabel.TextColor3 = Color3.fromRGB(0, 255, 50)
         elseif fps >= 60 then
-            fpsLabel.TextColor3 = Color3.fromRGB(150,255,100)
+            fpsLabel.TextColor3 = Color3.fromRGB(100, 255, 50)
         elseif fps >= 30 then
-            fpsLabel.TextColor3 = Color3.fromRGB(255,220,0)
+            fpsLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
         else
-            fpsLabel.TextColor3 = Color3.fromRGB(255,50,50)
+            fpsLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
         end
         
-        -- PING Display
-        pingLabel.Text = "PING: "..math.floor(ping).."ms"
+        pingLabel.Text = "📡 PING: " .. ping .. "ms"
         if ping < 50 then
-            pingLabel.TextColor3 = Color3.fromRGB(0,255,150)
+            pingLabel.TextColor3 = Color3.fromRGB(0, 255, 50)
         elseif ping < 100 then
-            pingLabel.TextColor3 = Color3.fromRGB(255,220,0)
+            pingLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
+        elseif ping < 200 then
+            pingLabel.TextColor3 = Color3.fromRGB(255, 100, 0)
         else
-            pingLabel.TextColor3 = Color3.fromRGB(255,100,255)
-        end
-        
-        -- Auto-activate
-        table.insert(fpsHistory, fps)
-        if #fpsHistory > 5 then table.remove(fpsHistory, 1) end
-        
-        local avgFps = 0
-        for _, f in ipairs(fpsHistory) do avgFps = avgFps + f end
-        avgFps = avgFps / #fpsHistory
-        
-        if not ultimateModeActivated and #fpsHistory >= 5 and avgFps < 60 then
-            ultimateModeActivated = true
-            notifStatus.Text = "⚠️ LOW FPS → BOOSTING NOW"
-            showNotification()
-            task.wait(0.5)
-            enableULTIMATEMode()
-            enableLowPingMode()
-            notifStatus.Text = "✓ ULTIMATE MODE ACTIVE"
-     
+            pingLabel.TextColo
