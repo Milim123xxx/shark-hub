@@ -1,26 +1,27 @@
 -- ═══════════════════════════════════════════════════
--- 🦈 SHARK HUB POTATO MODE - กากที่สุด + Player ESP
+-- 🦈 SHARK HUB ULTIMATE FPS BOOSTER
+-- ลบเอฟเฟคทุกอย่าง + แก้ PING
 -- ═══════════════════════════════════════════════════
 
-print("🦈 SHARK HUB POTATO LOADING...")
+print("🦈 SHARK HUB LOADING...")
 
 local Players = game:GetService("Players")
 local Lighting = game:GetService("Lighting")
 local Workspace = game:GetService("Workspace")
 local RunService = game:GetService("RunService")
-local CoreGui = game:GetService("CoreGui")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local player = Players.LocalPlayer
 local camera = Workspace.CurrentCamera
 
 -- ═══════════════════════════════════════════════════
--- 💀 POTATO GRAPHICS (กากสุดๆ)
+-- 🔥 EXTREME GRAPHICS DESTROYER
 -- ═══════════════════════════════════════════════════
 
-local function potatoGraphics()
-    print("💀 ACTIVATING POTATO MODE...")
+local function destroyGraphics()
+    print("🔥 DESTROYING GRAPHICS...")
     
-    -- Graphics ต่ำสุดที่เป็นไปได้
+    -- Graphics Settings (ต่ำสุด)
     pcall(function()
         settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
         settings().Rendering.MeshPartDetailLevel = Enum.MeshPartDetailLevel.Level01
@@ -28,10 +29,10 @@ local function potatoGraphics()
         
         local UserGameSettings = UserSettings():GetService("UserGameSettings")
         UserGameSettings.SavedQualityLevel = Enum.SavedQualitySetting.QualityLevel1
-        UserGameSettings.MasterVolume = 0
+        UserGameSettings.GraphicsQualityLevel = 1
     end)
     
-    -- Lighting (ไม่มีอะไรเลย)
+    -- Lighting
     pcall(function()
         Lighting.GlobalShadows = false
         Lighting.FogEnd = 9e9
@@ -46,9 +47,12 @@ local function potatoGraphics()
         Lighting.ShadowSoftness = 0
         Lighting.Technology = Enum.Technology.Compatibility
         
-        -- ลบทุกอย่าง
+        -- ลบทุก Effect ใน Lighting
         for _, obj in pairs(Lighting:GetChildren()) do
-            if not obj:IsA("Terrain") then
+            if obj:IsA("PostEffect") or obj:IsA("BloomEffect") or obj:IsA("BlurEffect") or
+               obj:IsA("ColorCorrectionEffect") or obj:IsA("DepthOfFieldEffect") or
+               obj:IsA("SunRaysEffect") or obj:IsA("Atmosphere") or obj:IsA("Sky") or
+               obj:IsA("Clouds") then
                 obj:Destroy()
             end
         end
@@ -66,54 +70,89 @@ local function potatoGraphics()
         end
     end)
     
-    print("✓ POTATO MODE ACTIVE")
+    print("✓ Graphics Destroyed")
 end
 
 -- ═══════════════════════════════════════════════════
--- 🗑️ MEGA DESTROYER (ลบทุกอย่างที่เห็น)
+-- 💣 MEGA EFFECT DESTROYER (ลบเอฟเฟคทุกอย่าง)
 -- ═══════════════════════════════════════════════════
 
-local function megaDestroyer()
-    print("🗑️ DESTROYING EVERYTHING...")
+local function destroyAllEffects()
+    print("💣 DESTROYING ALL EFFECTS...")
     
-    local destroyed = 0
+    local effectsDestroyed = 0
+    local objectsOptimized = 0
     
+    -- Workspace
     for _, obj in pairs(Workspace:GetDescendants()) do
         pcall(function()
             local name = obj.Name:lower()
+            local parent = obj.Parent and obj.Parent.Name:lower() or ""
             
-            -- เก็บแค่ตัวละคร
-            if name == "humanoid" or name == "head" or name == "torso" or 
-               name == "left arm" or name == "right arm" or name == "left leg" or 
-               name == "right leg" or name == "humanoidrootpart" or 
-               name == "upper torso" or name == "lower torso" then
+            -- เก็บตัวละคร
+            if name == "humanoid" or name == "head" or name:find("torso") or 
+               name:find("arm") or name:find("leg") or name == "humanoidrootpart" then
                 return
             end
             
-            -- ลบทุกอย่าง
-            if obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Beam") or
-               obj:IsA("Fire") or obj:IsA("Smoke") or obj:IsA("Sparkles") or
-               obj:IsA("Explosion") or obj:IsA("PointLight") or obj:IsA("SpotLight") or
-               obj:IsA("SurfaceLight") then
+            -- เก็บชื่อผู้เล่น
+            if name:find("nametag") or name:find("overhead") or name:find("healthbar") or
+               parent:find("nametag") or parent:find("overhead") then
+                return
+            end
+            
+            -- ลบ Particle Effects
+            if obj:IsA("ParticleEmitter") then
                 obj:Destroy()
-                destroyed = destroyed + 1
+                effectsDestroyed = effectsDestroyed + 1
                 
-            -- ลบ Textures/Decals (ทุกอย่าง รวมหน้า)
+            -- ลบ Trail Effects
+            elseif obj:IsA("Trail") then
+                obj:Destroy()
+                effectsDestroyed = effectsDestroyed + 1
+                
+            -- ลบ Beam Effects
+            elseif obj:IsA("Beam") then
+                obj:Destroy()
+                effectsDestroyed = effectsDestroyed + 1
+                
+            -- ลบ Fire Effects
+            elseif obj:IsA("Fire") then
+                obj:Destroy()
+                effectsDestroyed = effectsDestroyed + 1
+                
+            -- ลบ Smoke Effects
+            elseif obj:IsA("Smoke") then
+                obj:Destroy()
+                effectsDestroyed = effectsDestroyed + 1
+                
+            -- ลบ Sparkles Effects
+            elseif obj:IsA("Sparkles") then
+                obj:Destroy()
+                effectsDestroyed = effectsDestroyed + 1
+                
+            -- ลบ Explosion Effects
+            elseif obj:IsA("Explosion") then
+                obj:Destroy()
+                effectsDestroyed = effectsDestroyed + 1
+                
+            -- ลบ Light Effects
+            elseif obj:IsA("PointLight") or obj:IsA("SpotLight") or obj:IsA("SurfaceLight") then
+                obj:Destroy()
+                effectsDestroyed = effectsDestroyed + 1
+                
+            -- ลบ Decals/Textures
             elseif obj:IsA("Decal") then
-                obj.Transparency = 1
-                destroyed = destroyed + 1
-            elseif obj:IsA("Texture") or obj:IsA("SurfaceAppearance") then
-                obj:Destroy()
-                destroyed = destroyed + 1
-                
-            -- ลบ GUI (ยกเว้น ESP)
-            elseif obj:IsA("SurfaceGui") or obj:IsA("BillboardGui") then
-                if not obj.Name:find("ESP") then
+                if name ~= "face" then
                     obj:Destroy()
-                    destroyed = destroyed + 1
+                    effectsDestroyed = effectsDestroyed + 1
                 end
                 
-            -- ทำ Parts กาก
+            elseif obj:IsA("Texture") or obj:IsA("SurfaceAppearance") then
+                obj:Destroy()
+                effectsDestroyed = effectsDestroyed + 1
+                
+            -- Optimize Parts
             elseif obj:IsA("MeshPart") then
                 obj.Material = Enum.Material.Plastic
                 obj.Reflectance = 0
@@ -122,25 +161,39 @@ local function megaDestroyer()
                 obj.RenderFidelity = Enum.RenderFidelity.Performance
                 obj.CollisionFidelity = Enum.CollisionFidelity.Box
                 obj.DoubleSided = false
-                obj.Color = Color3.fromRGB(150, 150, 150)
-                destroyed = destroyed + 1
+                objectsOptimized = objectsOptimized + 1
                 
             elseif obj:IsA("Part") or obj:IsA("WedgePart") or obj:IsA("UnionOperation") then
                 obj.Material = Enum.Material.Plastic
                 obj.Reflectance = 0
                 obj.CastShadow = false
-                obj.Color = Color3.fromRGB(150, 150, 150)
-                destroyed = destroyed + 1
+                objectsOptimized = objectsOptimized + 1
                 
-            -- ลบ Mesh Textures
+            -- Remove Mesh Textures
             elseif obj:IsA("SpecialMesh") or obj:IsA("FileMesh") then
                 obj.TextureId = ""
-                destroyed = destroyed + 1
+                objectsOptimized = objectsOptimized + 1
                 
-            -- ปิด Sounds
+            -- Disable Sounds
             elseif obj:IsA("Sound") then
                 obj.Volume = 0
-                obj:Stop()
+                if obj.IsPlaying then
+                    obj:Stop()
+                end
+                
+            -- Remove GUI (keep player names)
+            elseif obj:IsA("SurfaceGui") then
+                if not name:find("name") and not name:find("health") then
+                    obj:Destroy()
+                    effectsDestroyed = effectsDestroyed + 1
+                end
+                
+            elseif obj:IsA("BillboardGui") then
+                if not name:find("name") and not name:find("health") and 
+                   not name:find("overhead") and not parent:find("name") then
+                    obj:Destroy()
+                    effectsDestroyed = effectsDestroyed + 1
+                end
             end
         end)
     end
@@ -148,206 +201,208 @@ local function megaDestroyer()
     -- Camera Effects
     pcall(function()
         for _, effect in pairs(camera:GetChildren()) do
-            if not effect:IsA("Camera") then
+            if effect:IsA("PostEffect") or effect:IsA("BloomEffect") or 
+               effect:IsA("BlurEffect") or effect:IsA("ColorCorrectionEffect") or
+               effect:IsA("DepthOfFieldEffect") or effect:IsA("SunRaysEffect") then
                 effect:Destroy()
-                destroyed = destroyed + 1
+                effectsDestroyed = effectsDestroyed + 1
             end
         end
     end)
     
-    print("✓ Destroyed " .. destroyed .. " objects")
+    -- ReplicatedStorage Effects
+    pcall(function()
+        for _, obj in pairs(ReplicatedStorage:GetDescendants()) do
+            if obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Beam") then
+                obj:Destroy()
+                effectsDestroyed = effectsDestroyed + 1
+            end
+        end
+    end)
+    
+    print("✓ Effects Destroyed: " .. effectsDestroyed)
+    print("✓ Objects Optimized: " .. objectsOptimized)
 end
 
 -- ═══════════════════════════════════════════════════
--- 👁️ PLAYER ESP (เห็นชื่อผู้เล่นทุกคน)
+-- ⚡ NETWORK OPTIMIZER (แก้ PING)
 -- ═══════════════════════════════════════════════════
 
-local espEnabled = true
-local espColor = Color3.fromRGB(0, 255, 0)
+local function optimizeNetwork()
+    print("⚡ OPTIMIZING NETWORK...")
+    
+    -- Network Settings
+    pcall(function()
+        settings().Network.IncomingReplicationLag = 0
+        settings().Network.PhysicsSend = 1
+        settings().Network.PhysicsReceive = 1
+        settings().Network.ExperimentalPhysicsEnabled = false
+    end)
+    
+    -- Simplify Other Players
+    pcall(function()
+        for _, otherPlayer in pairs(Players:GetPlayers()) do
+            if otherPlayer ~= player and otherPlayer.Character then
+                for _, part in pairs(otherPlayer.Character:GetDescendants()) do
+                    pcall(function()
+                        if part:IsA("BasePart") then
+                            if part.Name ~= "Head" and part.Name ~= "HumanoidRootPart" then
+                                part.Transparency = 0.8
+                                part.CanCollide = false
+                                part.CastShadow = false
+                            end
+                        elseif part:IsA("ParticleEmitter") or part:IsA("Trail") or part:IsA("Beam") then
+                            part:Destroy()
+                        end
+                    end)
+                end
+            end
+        end
+    end)
+    
+    print("✓ Network Optimized")
+end
 
-local function createESP(player)
-    if player == Players.LocalPlayer then return end
+-- ═══════════════════════════════════════════════════
+-- 👁️ PLAYER ESP (เห็นชื่อผู้เล่น)
+-- ═══════════════════════════════════════════════════
+
+local function createESP(targetPlayer)
+    if targetPlayer == player then return end
     
     local function addESP(character)
         if not character then return end
         
-        local hrp = character:WaitForChild("HumanoidRootPart", 5)
-        local humanoid = character:WaitForChild("Humanoid", 5)
-        if not hrp or not humanoid then return end
-        
-        -- ลบ ESP เก่า
-        for _, old in pairs(hrp:GetChildren()) do
-            if old.Name == "ESP_GUI" then
-                old:Destroy()
+        pcall(function()
+            local hrp = character:WaitForChild("HumanoidRootPart", 5)
+            local humanoid = character:WaitForChild("Humanoid", 5)
+            if not hrp or not humanoid then return end
+            
+            -- Remove old ESP
+            for _, old in pairs(hrp:GetChildren()) do
+                if old.Name == "ESP_GUI" then
+                    old:Destroy()
+                end
             end
-        end
-        
-        -- สร้าง BillboardGui
-        local billboard = Instance.new("BillboardGui")
-        billboard.Name = "ESP_GUI"
-        billboard.Adornee = hrp
-        billboard.Size = UDim2.new(0, 200, 0, 50)
-        billboard.StudsOffset = Vector3.new(0, 3, 0)
-        billboard.AlwaysOnTop = true
-        billboard.Parent = hrp
-        
-        -- ชื่อผู้เล่น
-        local nameLabel = Instance.new("TextLabel")
-        nameLabel.Size = UDim2.new(1, 0, 0.5, 0)
-        nameLabel.BackgroundTransparency = 1
-        nameLabel.TextColor3 = espColor
-        nameLabel.TextStrokeTransparency = 0
-        nameLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-        nameLabel.Text = player.Name
-        nameLabel.Font = Enum.Font.GothamBold
-        nameLabel.TextSize = 16
-        nameLabel.Parent = billboard
-        
-        -- ระยะทาง
-        local distLabel = Instance.new("TextLabel")
-        distLabel.Size = UDim2.new(1, 0, 0.5, 0)
-        distLabel.Position = UDim2.new(0, 0, 0.5, 0)
-        distLabel.BackgroundTransparency = 1
-        distLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
-        distLabel.TextStrokeTransparency = 0
-        distLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-        distLabel.Text = "0m"
-        distLabel.Font = Enum.Font.Gotham
-        distLabel.TextSize = 14
-        distLabel.Parent = billboard
-        
-        -- Update Distance
-        task.spawn(function()
-            local localChar = Players.LocalPlayer.Character
-            while billboard and billboard.Parent and humanoid.Health > 0 do
-                pcall(function()
-                    if localChar and localChar:FindFirstChild("HumanoidRootPart") then
-                        local dist = (localChar.HumanoidRootPart.Position - hrp.Position).Magnitude
-                        distLabel.Text = math.floor(dist) .. "m"
-                        
-                        -- เปลี่ยนสีตามระยะ
-                        if dist < 50 then
-                            nameLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-                        elseif dist < 100 then
-                            nameLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
-                        else
-                            nameLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+            
+            -- Create BillboardGui
+            local billboard = Instance.new("BillboardGui")
+            billboard.Name = "ESP_GUI"
+            billboard.Adornee = hrp
+            billboard.Size = UDim2.new(0, 200, 0, 50)
+            billboard.StudsOffset = Vector3.new(0, 3, 0)
+            billboard.AlwaysOnTop = true
+            billboard.Parent = hrp
+            
+            -- Player Name
+            local nameLabel = Instance.new("TextLabel")
+            nameLabel.Size = UDim2.new(1, 0, 0.5, 0)
+            nameLabel.BackgroundTransparency = 1
+            nameLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+            nameLabel.TextStrokeTransparency = 0
+            nameLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+            nameLabel.Text = targetPlayer.Name
+            nameLabel.Font = Enum.Font.GothamBold
+            nameLabel.TextSize = 16
+            nameLabel.Parent = billboard
+            
+            -- Distance
+            local distLabel = Instance.new("TextLabel")
+            distLabel.Size = UDim2.new(1, 0, 0.5, 0)
+            distLabel.Position = UDim2.new(0, 0, 0.5, 0)
+            distLabel.BackgroundTransparency = 1
+            distLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+            distLabel.TextStrokeTransparency = 0
+            distLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+            distLabel.Text = "0m"
+            distLabel.Font = Enum.Font.Gotham
+            distLabel.TextSize = 14
+            distLabel.Parent = billboard
+            
+            -- Update Distance
+            task.spawn(function()
+                while billboard and billboard.Parent and humanoid.Health > 0 do
+                    pcall(function()
+                        local char = player.Character
+                        if char and char:FindFirstChild("HumanoidRootPart") then
+                            local dist = (char.HumanoidRootPart.Position - hrp.Position).Magnitude
+                            distLabel.Text = math.floor(dist) .. "m"
+                            
+                            if dist < 50 then
+                                nameLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+                            elseif dist < 100 then
+                                nameLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+                            else
+                                nameLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+                            end
                         end
-                    end
-                end)
+                    end)
+                    task.wait(0.5)
+                end
+                if billboard then billboard:Destroy() end
+            end)
+            
+            humanoid.Died:Connect(function()
                 task.wait(0.5)
-            end
-            if billboard then billboard:Destroy() end
-        end)
-        
-        -- เมื่อตาย
-        humanoid.Died:Connect(function()
-            task.wait(0.5)
-            if billboard then billboard:Destroy() end
+                if billboard then billboard:Destroy() end
+            end)
         end)
     end
     
-    -- เมื่อมีตัวละคร
-    if player.Character then
-        addESP(player.Character)
+    if targetPlayer.Character then
+        addESP(targetPlayer.Character)
     end
     
-    -- เมื่อ Respawn
-    player.CharacterAdded:Connect(function(char)
+    targetPlayer.CharacterAdded:Connect(function(char)
         task.wait(1)
         addESP(char)
     end)
 end
 
 local function setupESP()
-    print("👁️ SETTING UP PLAYER ESP...")
+    print("👁️ SETTING UP ESP...")
     
-    -- ESP สำหรับผู้เล่นปัจจุบัน
     for _, otherPlayer in pairs(Players:GetPlayers()) do
         createESP(otherPlayer)
     end
     
-    -- ESP สำหรับผู้เล่นใหม่
     Players.PlayerAdded:Connect(function(otherPlayer)
         createESP(otherPlayer)
     end)
     
-    print("✓ PLAYER ESP ACTIVE")
+    print("✓ ESP Active")
 end
 
 -- ═══════════════════════════════════════════════════
--- 🎨 ทำให้ผู้เล่นอื่นเป็นสีเทา (เห็นง่าย)
+-- 🔄 CONTINUOUS EFFECT DESTROYER
 -- ═══════════════════════════════════════════════════
 
-local function grayPlayers()
-    print("🎨 MAKING PLAYERS GRAY...")
-    
-    for _, otherPlayer in pairs(Players:GetPlayers()) do
-        if otherPlayer ~= player then
-            task.spawn(function()
-                local char = otherPlayer.Character
-                if char then
-                    for _, part in pairs(char:GetDescendants()) do
-                        pcall(function()
-                            if part:IsA("BasePart") then
-                                part.Color = Color3.fromRGB(100, 100, 100)
-                                part.Material = Enum.Material.Plastic
-                                part.CastShadow = false
-                            elseif part:IsA("Decal") then
-                                part.Transparency = 0.5
-                            end
-                        end)
-                    end
+local function continuousDestroyer()
+    task.spawn(function()
+        while task.wait(2) do
+            pcall(function()
+                for _, obj in pairs(Workspace:GetDescendants()) do
+                    pcall(function()
+                        if obj:IsA("ParticleEmitter") or obj:IsA("Trail") or 
+                           obj:IsA("Beam") or obj:IsA("Fire") or obj:IsA("Smoke") or
+                           obj:IsA("Sparkles") or obj:IsA("PointLight") or 
+                           obj:IsA("SpotLight") or obj:IsA("SurfaceLight") or
+                           obj:IsA("Explosion") then
+                            obj:Destroy()
+                        end
+                    end)
                 end
             end)
         end
-    end
-    
-    -- สำหรับผู้เล่นใหม่
-    Players.PlayerAdded:Connect(function(newPlayer)
-        newPlayer.CharacterAdded:Connect(function(char)
-            task.wait(1)
-            for _, part in pairs(char:GetDescendants()) do
-                pcall(function()
-                    if part:IsA("BasePart") then
-                        part.Color = Color3.fromRGB(100, 100, 100)
-                        part.Material = Enum.Material.Plastic
-                    end
-                end)
-            end
-        end)
     end)
-    
-    print("✓ PLAYERS ARE NOW GRAY")
+    print("✓ Continuous Destroyer Active")
 end
 
 -- ═══════════════════════════════════════════════════
--- ⚡ ULTRA PING REDUCER
+-- 🎰 AUTO PICKUP
 -- ═══════════════════════════════════════════════════
 
-local function ultraPing()
-    print("⚡ REDUCING PING...")
-    
-    pcall(function()
-        settings().Network.IncomingReplicationLag = 0
-    end)
-    
-    print("✓ PING REDUCED")
-end
-
--- ═══════════════════════════════════════════════════
--- 🎰 MEGA LUCK
--- ═══════════════════════════════════════════════════
-
-local function megaLuck()
-    print("🎰 LUCK SYSTEM...")
-    
-    math.random = function(a, b)
-        if not a then return 1 end
-        if not b then return a end
-        return b
-    end
-    
+local function autoPickup()
     task.spawn(function()
         local char = player.Character
         if not char then return end
@@ -360,7 +415,8 @@ local function megaLuck()
                     if obj:IsA("BasePart") then
                         local n = obj.Name:lower()
                         if n:find("coin") or n:find("gem") or n:find("cash") or 
-                           n:find("money") or n:find("orb") or n:find("pickup") then
+                           n:find("money") or n:find("orb") or n:find("pickup") or
+                           n:find("collectible") or n:find("drop") then
                             local dist = (obj.Position - hrp.Position).Magnitude
                             if dist < 300 then
                                 obj.CFrame = hrp.CFrame
@@ -371,38 +427,14 @@ local function megaLuck()
             end)
         end
     end)
-    
-    print("✓ LUCK ACTIVE")
+    print("✓ Auto Pickup Active")
 end
 
 -- ═══════════════════════════════════════════════════
--- 🔄 CONTINUOUS DESTROYER
+-- 📊 FPS/PING COUNTER
 -- ═══════════════════════════════════════════════════
 
-local function continuousDestroyer()
-    task.spawn(function()
-        while task.wait(3) do
-            pcall(function()
-                for _, obj in pairs(Workspace:GetDescendants()) do
-                    pcall(function()
-                        if obj:IsA("ParticleEmitter") or obj:IsA("Trail") or 
-                           obj:IsA("Beam") or obj:IsA("Fire") or obj:IsA("Smoke") or
-                           obj:IsA("Sparkles") or obj:IsA("PointLight") or 
-                           obj:IsA("SpotLight") or obj:IsA("Explosion") then
-                            obj:Destroy()
-                        end
-                    end)
-                end
-            end)
-        end
-    end)
-end
-
--- ═══════════════════════════════════════════════════
--- 📊 SIMPLE FPS COUNTER
--- ═══════════════════════════════════════════════════
-
-local function createFPSCounter()
+local function createCounter()
     local playerGui = player:WaitForChild("PlayerGui")
     
     for _, gui in pairs(playerGui:GetChildren()) do
@@ -417,8 +449,8 @@ local function createFPSCounter()
     screenGui.Parent = playerGui
     
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 150, 0, 60)
-    frame.Position = UDim2.new(0.5, -75, 0, 10)
+    frame.Size = UDim2.new(0, 160, 0, 70)
+    frame.Position = UDim2.new(0.5, -80, 0, 10)
     frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     frame.BackgroundTransparency = 0.3
     frame.BorderSizePixel = 0
@@ -434,7 +466,7 @@ local function createFPSCounter()
     fpsLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
     fpsLabel.Text = "FPS: --"
     fpsLabel.Font = Enum.Font.GothamBold
-    fpsLabel.TextSize = 18
+    fpsLabel.TextSize = 20
     fpsLabel.Parent = frame
     
     local pingLabel = Instance.new("TextLabel")
@@ -444,7 +476,7 @@ local function createFPSCounter()
     pingLabel.TextColor3 = Color3.fromRGB(255, 0, 255)
     pingLabel.Text = "PING: --"
     pingLabel.Font = Enum.Font.GothamBold
-    pingLabel.TextSize = 18
+    pingLabel.TextSize = 20
     pingLabel.Parent = frame
     
     local lastTime = tick()
@@ -457,6 +489,22 @@ local function createFPSCounter()
                 fpsLabel.Text = "FPS: " .. frames
                 local ping = math.floor(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue())
                 pingLabel.Text = "PING: " .. ping .. "ms"
+                
+                if frames >= 60 then
+                    fpsLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+                elseif frames >= 30 then
+                    fpsLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+                else
+                    fpsLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+                end
+                
+                if ping < 100 then
+                    pingLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+                elseif ping < 200 then
+                    pingLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+                else
+                    pingLabel.TextColor3 = Color3.fromRGB(255, 0, 255)
+                end
             end)
             frames = 0
             lastTime = tick()
@@ -465,44 +513,42 @@ local function createFPSCounter()
 end
 
 -- ═══════════════════════════════════════════════════
--- 🚀 EXECUTE ALL
+-- 🚀 EXECUTE
 -- ═══════════════════════════════════════════════════
 
 print("═══════════════════════════════════")
-print("🦈 SHARK HUB POTATO MODE")
+print("🦈 SHARK HUB ULTIMATE")
 print("═══════════════════════════════════")
 
 task.wait(0.5)
-potatoGraphics()
+destroyGraphics()
 
 task.wait(0.3)
-megaDestroyer()
+destroyAllEffects()
+
+task.wait(0.3)
+optimizeNetwork()
 
 task.wait(0.3)
 setupESP()
 
 task.wait(0.3)
-grayPlayers()
-
-task.wait(0.3)
-ultraPing()
-
-task.wait(0.3)
-megaLuck()
-
-task.wait(0.3)
 continuousDestroyer()
 
 task.wait(0.3)
-createFPSCounter()
+autoPickup()
+
+task.wait(0.3)
+createCounter()
 
 print("═══════════════════════════════════")
-print("✓ POTATO MODE ACTIVE!")
-print("✓ PLAYER ESP ACTIVE!")
-print("✓ FPS SHOULD BE MAXIMUM!")
+print("✓ SHARK HUB READY!")
+print("✓ FPS BOOST ACTIVE!")
+print("✓ PING OPTIMIZED!")
+print("✓ ESP ACTIVE!")
 print("═══════════════════════════════════")
 
 player.CharacterAdded:Connect(function()
     task.wait(2)
-    megaLuck()
+    autoPickup()
 end)
