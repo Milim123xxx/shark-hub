@@ -1,9 +1,3 @@
--- ═══════════════════════════════════════════════════
--- 🦈 SHARK HUB ULTIMATE - EXTREME PERFORMANCE MODE
--- ═══════════════════════════════════════════════════
--- ⚠️ WARNING: จัดหนักจัดเต็ม ลบทุกอย่างที่ไม่จำเป็น
--- ═══════════════════════════════════════════════════
-
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Lighting = game:GetService("Lighting")
